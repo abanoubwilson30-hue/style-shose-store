@@ -35,9 +35,29 @@ body::before {
         .products-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
         .product-card { border: 1px solid #ffcc00; padding: 10px; border-radius: 10px; background: #111; }
         .product-card img { width: 100%; border-radius: 5px; height: 150px; object-fit: cover; }
+        /* تنسيق عداد الزيارات */
+.visitor-counter {
+    position: fixed;
+    top: 75px; /* ده عشان ينزل تحت السلة بالظبط */
+    right: 15px; /* نفس محاذاة السلة على اليمين */
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid #ffcc00;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    direction: rtl;
+}
     </style>
 </head>
 <body>
+    <div class="visitor-counter">
+    👁 <span id="count-number" class="gold-text">0</span>
+</div>
     <div id="cart-counter" onclick="showCart()" style="position: fixed; top: 15px; right: 15px; z-index: 2000; background: #ff6600; color: #fff; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; border: 2px solid #fff; display: flex; align-items: center; gap: 8px; direction: rtl;">
    🛒 السلة (<span id="cart-count">0</span>)
 </div>
@@ -71,8 +91,8 @@ body::before {
 <div class="logo-container">
     <img src="logo.jpeg" alt="Logo" onerror="this.src='pic.jpeg'">
 </div>
-    <h1>Welcome Style Shoes and Bag</h1>
-    <img src="pic.jpeg" width="300" style="border-radius: 10px;">
+<h1 class="gold-text">Welcome Style Shoes and Bag</h1>
+<img src="pic.jpeg" width="300" style="border-radius: 10px;">
 
     <div style="margin-top: 20px;">
     <p style="color: white; margin-top: 20px;">رقم التليفون: <span class="gold-text">01224183335</span></p>
@@ -798,6 +818,20 @@ function sendOrder() {
     let whatsappNumber = "201120327355"; 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
 }
+</script>
+<script>
+    // كود عداد الزيارات
+    let visits = localStorage.getItem('visitor_count');
+
+    if (visits) {
+        visits = Number(visits) + 1;
+    } else {
+        visits = 1;
+    }
+
+    // حفظ الرقم الجديد وإظهاره
+    localStorage.setItem('visitor_count', visits);
+    document.getElementById('count-number').innerHTML = visits;
 </script>
 </body>
 </html>
