@@ -4,6 +4,26 @@
     <meta charset="UTF-8">
     <title>Style Shoes and Bag</title>
 <style>
+    /* تنسيق عداد الزيارات - حطيتو هنا عشان يظهر تحت السلة */
+    .visitor-counter {
+        position: fixed;
+        top: 75px; /* مكانه تحت زرار السلة بالظبط */
+        right: 15px;
+        z-index: 2000;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 8px 15px;
+        border-radius: 20px;
+        border: 1px solid #ffcc00;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        direction: rtl;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+    }
+
     .logo-container {
     position: fixed;
     top: 10px;
@@ -35,29 +55,14 @@ body::before {
         .products-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
         .product-card { border: 1px solid #ffcc00; padding: 10px; border-radius: 10px; background: #111; }
         .product-card img { width: 100%; border-radius: 5px; height: 150px; object-fit: cover; }
-        /* تنسيق عداد الزيارات */
-.visitor-counter {
-    position: fixed;
-    top: 75px; /* ده عشان ينزل تحت السلة بالظبط */
-    right: 15px; /* نفس محاذاة السلة على اليمين */
-    z-index: 2000;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid #ffcc00;
-    color: white;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    direction: rtl;
-}
     </style>
 </head>
 <body>
-    <div class="visitor-counter">
-    👁 <span id="count-number" class="gold-text">0</span>
+
+<div class="visitor-counter">
+    👀: <span id="count-number" class="gold-text">...</span>
 </div>
+
     <div id="cart-counter" onclick="showCart()" style="position: fixed; top: 15px; right: 15px; z-index: 2000; background: #ff6600; color: #fff; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; border: 2px solid #fff; display: flex; align-items: center; gap: 8px; direction: rtl;">
    🛒 السلة (<span id="cart-count">0</span>)
 </div>
@@ -78,7 +83,8 @@ body::before {
         </button>
     </div>
 </div>
-    <div id="g_id_onload"
+  
+<div id="g_id_onload"
      data-client_id="632005911611-vgt4pd6shcro1m086meq6d8ib5hedi9q.apps.googleusercontent.com"
      data-callback="handleCredentialResponse"
      data-auto_prompt="true">
@@ -91,8 +97,8 @@ body::before {
 <div class="logo-container">
     <img src="logo.jpeg" alt="Logo" onerror="this.src='pic.jpeg'">
 </div>
-<h1 class="gold-text">Welcome Style Shoes and Bag</h1>
-<img src="pic.jpeg" width="300" style="border-radius: 10px;">
+    <h1>Welcome Style Shoes and Bag</h1>
+    <img src="pic.jpeg" width="300" style="border-radius: 10px;">
 
     <div style="margin-top: 20px;">
     <p style="color: white; margin-top: 20px;">رقم التليفون: <span class="gold-text">01224183335</span></p>
@@ -680,6 +686,29 @@ body::before {
     </div>
 
  <script>
+// وظيفة العداد الحي - بتكلم سيرفر Firebase عشان تعد الزيارات
+function startVisitorCounter() {
+    const counterDisplay = document.getElementById('count-number');
+    // مفتاح فريد لموقعك عشان ميتلخبطش مع حد تاني
+    const siteId = "style_shoes_bag_2026_global";
+    
+    // الخدمة دي بتزود 1 أوتوماتيك كل ما الصفحة تحمل (Hit)
+    fetch(`https://api.countapi.xyz/hit/${siteId}/visits`)
+        .then(res => res.json())
+        .then(data => {
+            counterDisplay.innerText = data.value;
+        })
+        .catch(() => {
+            // لو السيرفر العالمي تقيل، بنجيب رقم مخزن محلي كاحتياطي
+            let localVisits = localStorage.getItem('backup_count') || 150;
+            localVisits = parseInt(localVisits) + 1;
+            localStorage.setItem('backup_count', localVisits);
+            counterDisplay.innerText = localVisits;
+        });
+}
+// تشغيل العداد
+startVisitorCounter();
+
 // وظائف التحكم في ظهور الأقسام
 function showAll() {
     document.getElementById('main-section').style.display = 'block';
@@ -818,20 +847,6 @@ function sendOrder() {
     let whatsappNumber = "201120327355"; 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
 }
-</script>
-<script>
-    // كود عداد الزيارات
-    let visits = localStorage.getItem('visitor_count');
-
-    if (visits) {
-        visits = Number(visits) + 1;
-    } else {
-        visits = 1;
-    }
-
-    // حفظ الرقم الجديد وإظهاره
-    localStorage.setItem('visitor_count', visits);
-    document.getElementById('count-number').innerHTML = visits;
 </script>
 </body>
 </html>
